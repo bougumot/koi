@@ -3,6 +3,7 @@
 FILES = ls.c
 TOOLBOX = toolbox.c
 APP = tst_app
+CNT=100
 
 all: $(FILES) $(TOOLBOX)
 	gcc $^ -o $(APP)
@@ -17,7 +18,10 @@ clobber:
 	rm -f *.o
 
 instrument: clobber asm $(FILES:.c=.ins)
-	gcc $(TOOLBOX) $(FILES:.c=.ins.o) -o $(APP)
+	gcc $(TOOLBOX) -DTRANSITIONS=$(CNT) $(FILES:.c=.ins.o) -o $(APP)
+	@echo "Total transitions: "$(CNT)
+
 %.ins:
-	../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S)
+	$(eval cnt= $(shell ../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S)))
+	$(eval CNT=`expr $(CNT) + $(cnt)`)
 	gcc $(@:.ins=.ins.S) -c -o $(@:.ins=.ins.o)

@@ -3,7 +3,7 @@
 const char*fmt = "%d:%d\n";
 
 void __attribute__((used, noinline))
-dump(int index, int label)
+dump(int from, int to)
 {
-	printf(fmt, index, label);
+	printf(fmt, from, to);
 }

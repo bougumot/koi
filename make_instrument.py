@@ -15,7 +15,7 @@ if __name__ == "__main__":
 	inputfile = 'input.S'
 	outputfile = None
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"hi:o:g",["ifile=","ofile="])
+		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gv",["ifile=","ofile="])
 	except getopt.GetoptError:
 		print 'USAGE: -i <inputfile> -o <outputfile>'
 		sys.exit(2)
@@ -29,11 +29,12 @@ if __name__ == "__main__":
 			outputfile = arg
 		elif opt == '-g':
 			doGraph = True
-	print 'Input file is ', inputfile
-	if outputfile is not None:
-		print 'Output file is ', outputfile
-	else:
-		print 'Using stdout'
+		elif opt == '-v':
+			print 'Input file is ', inputfile
+			if outputfile is not None:
+				print 'Output file is ', outputfile
+			else:
+				print 'Using stdout'
 		
 	# Get function body
 	lines = []
