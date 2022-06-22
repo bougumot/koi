@@ -1,6 +1,6 @@
 # A simple make to cereate a app or .S
 
-FILES = main.c
+FILES = ls.c
 
 all: $(FILES)
 	gcc $^ -o tst_app

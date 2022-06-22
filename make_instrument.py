@@ -8,6 +8,8 @@ import platform.platform as platform
 from ins_blocks import CodeBlock
 from ins_graphs import *
 
+doGraph = None
+
 if __name__ == "__main__":
 	inputfile = 'input.S'
 	outputfile = None
