@@ -18,6 +18,7 @@ class CodeBlock:
 		self.stransition = None
 		self.ftransition = False
 		self.fallthru = False
+		self.transitions_count = 0
 
 	def addLine(self, line, count):
 		match = platform.meaningles.search(line)
@@ -29,6 +30,7 @@ class CodeBlock:
 		self.last_number = line_number			
 
 	def instrumentBlock(self, tid):
+		base_tid = tid
 		if "dump" in self.label: # do not instrument the instrumenter
 			return tid
 		if not self.meaningful:
@@ -60,7 +62,11 @@ class CodeBlock:
 			tid += 1
 			self.lines[-1:-1] = platform.asm.instrument(self.last_number, -1, tid)
 			tid += 1
+		self.transitions_count = tid - base_tid
 		return tid
+
+	def transitionsCount(self):
+		return self.transitions_count
 
 	def emitBlock(self):
 		if len(self.lines) == 1:
@@ -83,14 +89,6 @@ class CodeBlock:
 
 		if self.jtransition:
 	                print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"black\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
-
-	def transitionsCount(self):
-		transitions = 0
-		if self.stransition:
-			transitions += 1
-		if self.jtransition:
-			transitions += 1
-		return transitions
 
 	def renderBlock(self, show_lines):
 		for line in self.lines[1:]:

@@ -7,7 +7,7 @@ const char*fmt = "%d::%d:%d\n";
 void __attribute__((used, noinline))
 dump(int from, int to, int id)
 {
-	//printf(fmt, id, from, to);
+//	printf(fmt, id, from, to);
 	static int prev_from;
 	
 	if (prev_from == from) {
