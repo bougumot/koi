@@ -10,9 +10,9 @@ from ins_graphs import *
 
 if __name__ == "__main__":
 	inputfile = 'input.S'
-	outputfile = 'instrumented.S'
+	outputfile = None
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"hi:o:",["ifile=","ofile="])
+		opts, args = getopt.getopt(sys.argv[1:],"hi:o:g",["ifile=","ofile="])
 	except getopt.GetoptError:
 		print 'USAGE: -i <inputfile> -o <outputfile>'
 		sys.exit(2)
@@ -24,12 +24,17 @@ if __name__ == "__main__":
 			inputfile = arg
 		elif opt in ("-o", "--ofile"):
 			outputfile = arg
+		elif opt == '-g':
+			doGraph = True
 	print 'Input file is ', inputfile
-	print 'Output file is ', outputfile
+	if outputfile is not None:
+		print 'Output file is ', outputfile
+	else:
+		print 'Using stdout'
 		
 	# Get function body
 	lines = []
-	with open('input.S') as f:
+	with open(inputfile) as f:
 		lines = f.readlines()
 	f.close()
 	
@@ -98,15 +103,29 @@ if __name__ == "__main__":
 			 matchobj = platform.cond_jump_cmd.search(subline)
 			 if matchobj:
 				 frag.fallthru = True
-	
-	#graphBEGIN()
-	#for frag in fragments:
-	#	frag.emitBlock()
-	#for frag in fragments:
-	#	frag.emitTransitions()
-	#graphEND()
-	
-	for frag in fragments:
-		frag.instrumentBlock()
-		frag.renderBlock(False, outputfile)
-	
+
+	# Some block magic with output
+	original_stdout = sys.stdout	
+	if outputfile != None:
+		f = open(outputfile, 'a')
+	else:
+		f = original_stdout
+	sys.stdout = f
+
+	if doGraph:	
+		graphBEGIN()
+		for frag in fragments:
+			frag.emitBlock()
+		for frag in fragments:
+			frag.emitTransitions()
+		graphEND()
+	else:
+		for frag in fragments:
+			frag.instrumentBlock()
+			frag.renderBlock(False)
+
+	# restore	
+	sys.stdout = original_stdout 
+	if f != None:
+		f.close()
+

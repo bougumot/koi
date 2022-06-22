@@ -1,7 +1,6 @@
 # vi: set ts=4
 # The code block abstraction
 
-import sys
 import html
 import re
 import platform.platform as platform
@@ -71,22 +70,11 @@ class CodeBlock:
 		if self.jtransition:
 	                print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"black\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
 
-	def renderBlock(self, show_lines, outfile):
-		original_stdout = sys.stdout
-		
-		if outfile != None:
-			f = open(outfile, 'a')
-		else:
-			outfile = original_stdout
-		
-    		sys.stdout = f # Change the standard output to the file we created.
+	def renderBlock(self, show_lines):
 		for line in self.lines[1:]:
 			if show_lines:
 				print line,
 			else:
 				print re.sub(r'^\d+ ?', '', line, re.MULTILINE),
 
-		sys.stdout = original_stdout 
-		if f != None:
-			f.close()
 # End of file
