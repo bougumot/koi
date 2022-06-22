@@ -23,5 +23,5 @@ instrument: clobber asm $(FILES:.c=.ins)
 
 %.ins:
 	$(eval cnt= $(shell ../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S)))
-	$(eval CNT=`expr $(CNT) + $(cnt)`)
+	$(eval CNT=$(shell expr $(CNT) + $(cnt)))
 	gcc $(@:.ins=.ins.S) -c -o $(@:.ins=.ins.o)
