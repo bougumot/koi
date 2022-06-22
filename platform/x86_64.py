@@ -1,6 +1,6 @@
 # Static instrumentatin methods for x86_64:
 
-def instrument_x86_64(line_from, line_to):
+def instrument(line_from, line_to):
 		insBlock = list()
 		insBlock.append("\tpushq\t%rbp ## INS\n")
 		insBlock.append("\tpushq\t%rdi ## INS\n")

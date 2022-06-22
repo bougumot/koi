@@ -3,8 +3,8 @@
 
 import sys
 import html
-from ins_definitions import *
-from platform.x86_64 import *
+import re
+import platform.platform as platform
 
 class CodeBlock:
 	def __init__(self, index, label, first_line_number):
@@ -20,7 +20,7 @@ class CodeBlock:
 		self.fallthru = False
 
 	def addLine(self, line, count):
-		match = meaningles.search(line)
+		match = platform.meaningles.search(line)
 		if not match:
 			self.meaningful = True
 		self.lines.append(str(count)+line)
@@ -38,16 +38,16 @@ class CodeBlock:
 
 		if self.jtransition: # A conditional block case of jump
 			if len(self.lines) == 2: # a special case of single jump
-				self.lines[1:1] = instrument_x86_64(self.jtransition[0], self.jtransition[1])
+				self.lines[1:1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1])
 			else:
-				self.lines[2:2] = instrument_x86_64(self.first_number, 0)
-				self.lines[-1:-1] = instrument_x86_64(self.jtransition[0], self.jtransition[1])
+				self.lines[2:2] = platform.asm.instrument(self.first_number, 0)
+				self.lines[-1:-1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1])
 		if self.stransition: # A conditional block case of skip, head is already set by jump case
-			self.lines.extend(instrument_x86_64(self.stransition[0], self.stransition[1]))
+			self.lines.extend(platform.asm.instrument(self.stransition[0], self.stransition[1]))
 
 		elif not self.jtransition: # A closed block, (function ?)
-			self.lines[2:2] = instrument_x86_64(self.first_number, 0)
-			self.lines[-1:-1] = instrument_x86_64(self.last_number, -1)
+			self.lines[2:2] = platform.asm.instrument(self.first_number, 0)
+			self.lines[-1:-1] = platform.asm.instrument(self.last_number, -1)
 
 	def emitBlock(self):
 		if len(self.lines) == 1:

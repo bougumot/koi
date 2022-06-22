@@ -3,11 +3,11 @@
 import sys, getopt
 import re
 import html
+import platform.platform as platform
 	
 from ins_blocks import CodeBlock
-from ins_definitions import *
 from ins_graphs import *
-	
+
 if __name__ == "__main__":
 	inputfile = 'input.S'
 	outputfile = 'instrumented.S'
@@ -42,8 +42,8 @@ if __name__ == "__main__":
 	for line in lines:
 		line_count += 1
 	
-		matchlabel = label_mark.search(line)
-		matchjump = jump_cmd.search(line)
+		matchlabel = platform.label_mark.search(line)
+		matchjump = platform.jump_cmd.search(line)
 		if matchlabel:
 			new_frag.closeBlock(line_count - 1)
 			fragments.append(new_frag)
@@ -74,17 +74,17 @@ if __name__ == "__main__":
 		# for every code fragment except the empy ones
 		for subline in frag.lines:
 		#for every line in a fragment
-			matchobj = jump_cmd.search(subline)
+			matchobj = platform.jump_cmd.search(subline)
 		if matchobj:
 				# search for a match:
 				for sfrag in fragments:
 					if not matchobj.group(2):
 						continue
 					if matchobj.group(2)+":" in sfrag.label:
-						trans_loc = line_address.search(subline)
+						trans_loc = platform.line_address.search(subline)
 						if trans_loc:
 							lfrom = trans_loc.group(1)
-							trans_loc = line_address.search(sfrag.lines[1])
+							trans_loc = platform.line_address.search(sfrag.lines[1])
 							lto = trans_loc.group(1)
 						frag.jtransition = (lfrom, lto)
 						frag.jump_to_block = sfrag.lines[0]
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 			 frag.stransition = (lfrom, lto)
 			 frag.skip_to_block = fragments[index + 1].lines[0]
 	
-			 matchobj = cond_jump_cmd.search(subline)
+			 matchobj = platform.cond_jump_cmd.search(subline)
 			 if matchobj:
 				 frag.fallthru = True
 	
