@@ -1,6 +1,7 @@
 # vi: set ts=4
 # The code block abstraction
 
+import sys
 import html
 from ins_definitions import *
 
@@ -98,11 +99,22 @@ class CodeBlock:
 
 		return insBlock
 
-	def renderBlock(self, show_lines):
+	def renderBlock(self, show_lines, outfile):
+		original_stdout = sys.stdout
+		
+		if outfile != None:
+			f = open(outfile, 'a')
+		else:
+			outfile = original_stdout
+		
+    		sys.stdout = f # Change the standard output to the file we created.
 		for line in self.lines[1:]:
 			if show_lines:
 				print line,
 			else:
 				print re.sub(r'^\d+ ?', '', line, re.MULTILINE),
 
+		sys.stdout = original_stdout 
+		if f != None:
+			f.close()
 # End of file
