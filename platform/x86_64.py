@@ -1,6 +1,6 @@
 # Static instrumentatin methods for x86_64:
 
-def instrument(line_from, line_to):
+def instrument(line_from, line_to, tid):
 		insBlock = list()
 		insBlock.append("\tpushq\t%rbp ## INS\n")
 		insBlock.append("\tpushq\t%rdi ## INS\n")
@@ -13,6 +13,7 @@ def instrument(line_from, line_to):
 		insBlock.append("\tpushfq\t ## INS\n")
 		insBlock.append("\tmovl\t$"+str(line_from)+", %edi ## INS\n")
 		insBlock.append("\tmovl\t$"+str(line_to)+", %esi ## INS\n")
+		insBlock.append("\tmovl\t$"+str(tid)+", %edx ## INS\n")
 		insBlock.append("\tcallq\t_dump ## INS\n")
 		insBlock.append("\tpopfq\t ## INS\n")
 		

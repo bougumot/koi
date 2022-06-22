@@ -14,19 +14,23 @@ total_transitions = 0;
 if __name__ == "__main__":
 	inputfile = 'input.S'
 	outputfile = None
+	tid = 0
+
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gv",["ifile=","ofile="])
+		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gvs:",["ifile=","ofile="])
 	except getopt.GetoptError:
-		print 'USAGE: -i <inputfile> -o <outputfile>'
+		print 'USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>'
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'USAGE: -i <inputfile> -o <outputfile>'
+			print 'USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>'
 			sys.exit()
 		elif opt in ("-i", "--ifile"):
 			inputfile = arg
 		elif opt in ("-o", "--ofile"):
 			outputfile = arg
+		elif opt in '-s':
+			tid = int(arg)
 		elif opt == '-g':
 			doGraph = True
 		elif opt == '-v':
@@ -35,7 +39,9 @@ if __name__ == "__main__":
 				print 'Output file is ', outputfile
 			else:
 				print 'Using stdout'
-		
+	
+	tid += 1
+	
 	# Get function body
 	lines = []
 	with open(inputfile) as f:
@@ -97,16 +103,18 @@ if __name__ == "__main__":
 							lto = trans_loc.group(1)
 						frag.jtransition = (lfrom, lto)
 						frag.jump_to_block = sfrag.lines[0]
-			   
+			
 		if (index+1 < len(fragments) and "jmp" not in subline and "ret" not in subline):
-			 lfrom = frag.last_number
-			 lto = frag.last_number + 1
-			 frag.stransition = (lfrom, lto)
-			 frag.skip_to_block = fragments[index + 1].lines[0]
+			lfrom = frag.last_number
+			lto = frag.last_number + 1
+			frag.stransition = (lfrom, lto)
+			frag.skip_to_block = fragments[index + 1].lines[0]
 	
-			 matchobj = platform.cond_jump_cmd.search(subline)
-			 if matchobj:
-				 frag.fallthru = True
+			matchobj = platform.cond_jump_cmd.search(subline)
+			if matchobj:
+				frag.fallthru = True
+			else:
+				fragments[index + 1].ftransition = True
 
 	# Some block magic with output
 	original_stdout = sys.stdout	
@@ -125,7 +133,7 @@ if __name__ == "__main__":
 		graphEND()
 	else:
 		for frag in fragments:
-			frag.instrumentBlock()
+			tid = frag.instrumentBlock(tid)
 			frag.renderBlock(False)
 			total_transitions += frag.transitionsCount()
 

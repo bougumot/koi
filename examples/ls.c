@@ -17,6 +17,7 @@
 #define STRLEN1 128
 #define STRLEN2 64
 
+extern void render_dump(void);
 
 int main(int argc, char *argv[]) 
 {
@@ -31,6 +32,10 @@ int main(int argc, char *argv[])
 	char 		   *file_name;
 	int 			u,c,l; 
 	char 		   *link_buf;
+
+#if defined(INSTRUMENTED)
+	atexit(render_dump);
+#endif	
 
 	if (argc != 3) {
 		printf("Usage: <option> <directory name>\n");

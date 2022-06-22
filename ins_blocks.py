@@ -16,6 +16,7 @@ class CodeBlock:
 		self.meaningful = False
 		self.jtransition = None
 		self.stransition = None
+		self.ftransition = False
 		self.fallthru = False
 
 	def addLine(self, line, count):
@@ -27,26 +28,39 @@ class CodeBlock:
 	def closeBlock(self, line_number):
 		self.last_number = line_number			
 
-	def instrumentBlock(self):
+	def instrumentBlock(self, tid):
 		if "dump" in self.label: # do not instrument the instrumenter
-			return
+			return tid
 		if not self.meaningful:
-			return
+			return tid
 		if len(self.lines) == 1:
-			return
+			return tid
 
 		if self.jtransition: # A conditional block case of jump
 			if len(self.lines) == 2: # a special case of single jump
-				self.lines[1:1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1])
+				self.lines[1:1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1], tid)
+				tid += 1
 			else:
-				self.lines[2:2] = platform.asm.instrument(self.first_number, 0)
-				self.lines[-1:-1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1])
+				self.ftransition = False
+				self.lines[2:2] = platform.asm.instrument(self.first_number, 0, tid)
+				tid += 1
+				self.lines[-1:-1] = platform.asm.instrument(self.jtransition[0], self.jtransition[1], tid)
+				tid += 1
+
 		if self.stransition: # A conditional block case of skip, head is already set by jump case
-			self.lines.extend(platform.asm.instrument(self.stransition[0], self.stransition[1]))
+			if self.ftransition:
+				self.lines[2:2] = platform.asm.instrument(self.first_number, 0, tid)
+				tid += 1
+
+			self.lines.extend(platform.asm.instrument(self.stransition[0], self.stransition[1], tid))
+			tid += 1
 
 		elif not self.jtransition: # A closed block, (function ?)
-			self.lines[2:2] = platform.asm.instrument(self.first_number, 0)
-			self.lines[-1:-1] = platform.asm.instrument(self.last_number, -1)
+			self.lines[2:2] = platform.asm.instrument(self.first_number, 0, tid)
+			tid += 1
+			self.lines[-1:-1] = platform.asm.instrument(self.last_number, -1, tid)
+			tid += 1
+		return tid
 
 	def emitBlock(self):
 		if len(self.lines) == 1:
