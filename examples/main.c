@@ -1,18 +1,10 @@
 #include <stdio.h>
 
-const char*fmt = "%d:%d\n";
-
 static int __attribute__((noinline))
 foo(int b)
 {
 	printf("I am foo\n");
 	return 1*b;
-}
-
-void __attribute__((used, noinline))
-dump(int index, int label)
-{
-	printf(fmt, index, label);
 }
 
 int main(int argc, char ** argv)

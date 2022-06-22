@@ -17,12 +17,6 @@
 #define STRLEN1 128
 #define STRLEN2 64
 
-const char*fmt = "%d:%d\n";
-void __attribute__((used, noinline))
-dump(int index, int label)
-{
-	printf(fmt, index, label);
-}
 
 int main(int argc, char *argv[]) 
 {
