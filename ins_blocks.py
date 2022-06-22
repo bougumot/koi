@@ -70,6 +70,14 @@ class CodeBlock:
 		if self.jtransition:
 	                print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"black\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
 
+	def transitionsCount(self):
+		transitions = 0
+		if self.stransition:
+			transitions += 1
+		if self.jtransition:
+			transitions += 1
+		return transitions
+
 	def renderBlock(self, show_lines):
 		for line in self.lines[1:]:
 			if show_lines:

@@ -9,6 +9,7 @@ from ins_blocks import CodeBlock
 from ins_graphs import *
 
 doGraph = None
+total_transitions = 0;
 
 if __name__ == "__main__":
 	inputfile = 'input.S'
@@ -125,9 +126,11 @@ if __name__ == "__main__":
 		for frag in fragments:
 			frag.instrumentBlock()
 			frag.renderBlock(False)
+			total_transitions += frag.transitionsCount()
 
 	# restore	
 	sys.stdout = original_stdout 
 	if f != None:
 		f.close()
 
+print total_transitions
