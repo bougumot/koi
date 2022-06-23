@@ -1,6 +1,7 @@
 #!/usr/bin/python
 	
 import sys, getopt
+import os.path
 import re
 import html
 import platform.platform as platform
@@ -35,7 +36,8 @@ if __name__ == "__main__":
 		elif opt == '-g':
 			doGraph = True
 		elif opt == '-t':
-			trans_name = arg
+			if os.path.exists(arg):
+				trans_name = arg
 		elif opt == '-v':
 			print 'Input file is ', inputfile
 			if outputfile is not None:

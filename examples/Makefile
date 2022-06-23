@@ -16,7 +16,13 @@ asm: $(FILES:.c=.asm)
 clobber: 
 	rm -f *.S 	
 	rm -f *.o
+	rm -f *.dot
 
+graph: $(FILES:.c=.dot)
+
+%.dot:
+	../make_instrument.py -i $(@:.dot=.S) -g -t coverage.log -o $@
+	
 instrument: clobber asm $(FILES:.c=.ins)
 	gcc $(TOOLBOX) -DTRANSITIONS=$(CNT) $(FILES:.c=.ins.o) -o $(APP)
 	@echo "Total transitions: "$(CNT)
