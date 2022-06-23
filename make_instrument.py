@@ -3,7 +3,6 @@
 import sys, getopt
 import os.path
 import re
-import html
 import platform.platform as platform
 	
 from ins_blocks import CodeBlock
