@@ -2,7 +2,7 @@
 
 static int __transitions[TRANSITIONS+1][2];
 
-const char*fmt = "%d::%d:%d\n";
+const char*fmt = "%d::%d:%d;\n";
 
 void __attribute__((used, noinline))
 dump(int from, int to, int id)

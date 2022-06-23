@@ -130,7 +130,7 @@ if __name__ == "__main__":
 	if doGraph:	
 		graphBEGIN()
 		for frag in fragments:
-			frag.emitBlock()
+			frag.emitBlock(trans_name)
 		for frag in fragments:
 			frag.emitTransitions(trans_name)
 		graphEND()

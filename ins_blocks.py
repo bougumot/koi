@@ -78,14 +78,27 @@ class CodeBlock:
 	def transitionsCount(self):
 		return self.transitions_count
 
-	def emitBlock(self):
+	def emitBlock(self, cov_file):
 		if len(self.lines) == 1:
 			return
 		if self.meaningful == False:
 			return
+
+		fp = None
+		if cov_file is not None:
+			fp = open(cov_file)
+
+		if lines_that_contain("::"+str(self.first_number)+":0", fp) is not None or lines_that_contain(":"+str(self.first_number)+";", fp) is not None:
+			color = "green"
+		else:
+			color = "gray"
+
+		if lines_that_contain("::"+str(self.last_number)+":", fp) is None and color is not "gray":
+			color = "brown"
+
 		print "\"state"+str(self.index)+"\"","[ style = \"filled\" penwidth = 1 fillcolor = \"white\" fontname = \"Courier New\" shape = \"Mrecord\" label =<<table border=\"0\" cellborder=\"0\" cellpadding=\"3\" bgcolor=\"white\"><tr><td bgcolor=\"black\" align=\"center\" colspan=\"2\"><font color=\"white\">", self.label, "</font></td></tr>",# no NL
 		for line in self.lines[1:]:
-			print "<tr><td align=\"left\" port=\"r5\">", html.escape(line.strip().replace("}","\}").replace("{","\{").replace("\t","    ")),"</td></tr>",
+			print "<tr><td align=\"left\" port=\"r5\">","<font color=\""+color+"\">", html.escape(line.strip().replace("}","\}").replace("{","\{").replace("\t","    ")),"</font></td></tr>",
 
 		print "</table>> ];"
 
