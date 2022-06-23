@@ -5,6 +5,16 @@ import html
 import re
 import platform.platform as platform
 
+def lines_that_contain(string, fp):
+	if fp is None:
+		return None
+	fp.seek(0)
+	arr = [line for line in fp if string in line]
+	if len(arr) == 0:
+		return None
+	else:
+		return arr
+
 class CodeBlock:
 	def __init__(self, index, label, first_line_number):
 		self.lines = list()
@@ -79,16 +89,30 @@ class CodeBlock:
 
 		print "</table>> ];"
 
-	def emitTransitions(self):
+	def emitTransitions(self, cov_file):
+		fp = None
+		if cov_file is not None:
+			fp = open(cov_file)
+
 		if self.stransition:
-			print self.lines[0], "->", self.skip_to_block, "[ penwidth = 5 fontsize = 28 fontcolor = \"black\" label = ",
+			color = "gray"
+			if lines_that_contain("::"+str(self.stransition[0])+":"+str(self.stransition[1]), fp) is not None:
+				color = "black"
+			else:
+				color = "red"
+			print self.lines[0], "->", self.skip_to_block, "[ penwidth = 5 fontsize = 28 fontcolor = \""+color+"\" label = ",
 			if self.fallthru:
 				print "\"SKIP " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]"
 			else:
 				print "\"FALL " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]"
 
 		if self.jtransition:
-	                print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"black\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
+			color = "gray"
+			if lines_that_contain("::"+str(self.jtransition[0])+":"+str(self.jtransition[1]), fp) is not None:
+				color = "black"
+			else:
+				color = "red"
+			print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"" + color + "\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
 
 	def renderBlock(self, show_lines):
 		for line in self.lines[1:]:

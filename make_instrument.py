@@ -14,10 +14,11 @@ total_transitions = 0;
 if __name__ == "__main__":
 	inputfile = 'input.S'
 	outputfile = None
+	trans_name = None
 	tid = 0
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gvs:",["ifile=","ofile="])
+		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gvs:t:",["ifile=","ofile="])
 	except getopt.GetoptError:
 		print 'USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>'
 		sys.exit(2)
@@ -33,6 +34,8 @@ if __name__ == "__main__":
 			tid = int(arg)
 		elif opt == '-g':
 			doGraph = True
+		elif opt == '-t':
+			trans_name = arg
 		elif opt == '-v':
 			print 'Input file is ', inputfile
 			if outputfile is not None:
@@ -129,7 +132,7 @@ if __name__ == "__main__":
 		for frag in fragments:
 			frag.emitBlock()
 		for frag in fragments:
-			frag.emitTransitions()
+			frag.emitTransitions(trans_name)
 		graphEND()
 	else:
 		for frag in fragments:
@@ -139,7 +142,7 @@ if __name__ == "__main__":
 
 	# restore	
 	sys.stdout = original_stdout 
-	if f != None:
+	if f != None and f != original_stdout:
 		f.close()
 
 print total_transitions
