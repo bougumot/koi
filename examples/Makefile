@@ -5,7 +5,7 @@ TOOLBOX = toolbox.c
 APP = tst_app
 CNT=0
 
-SPECIAL_CFLAGS = -m32
+#SPECIAL_CFLAGS = -m32
 
 all: $(FILES)
 	gcc $^ -o $(APP)
