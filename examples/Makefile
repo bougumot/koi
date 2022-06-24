@@ -6,6 +6,7 @@ APP = tst_app
 include $(KOI_ROOT)/toolbox/Makefile.koi 
 
 #SPECIAL_CFLAGS = -m32
+#SPECIAL_CFLAGS = -g
 
 all: $(FILES)
 	gcc $^ -o $(APP)
