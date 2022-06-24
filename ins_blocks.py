@@ -23,6 +23,7 @@ class CodeBlock:
 		self.index = index
 		self.first_number = first_line_number
 		self.last_number = 0
+		self.covered = False
 		self.meaningful = False
 		self.jtransition = None
 		self.stransition = None
@@ -90,6 +91,7 @@ class CodeBlock:
 
 		if lines_that_contain("::"+str(self.first_number)+":0", fp) is not None or lines_that_contain(":"+str(self.first_number)+";", fp) is not None:
 			color = "green"
+			self.covered = True
 		else:
 			color = "gray"
 

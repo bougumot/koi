@@ -28,6 +28,7 @@ if __name__ == "__main__":
 			sys.exit()
 		elif opt in ("-i", "--ifile"):
 			inputfile = arg
+			lstfile = arg.replace(".S", ".ins.lst")
 		elif opt in ("-o", "--ofile"):
 			outputfile = arg
 		elif opt in '-s':
@@ -57,7 +58,15 @@ if __name__ == "__main__":
 	
 	fragments = [] # An empty list for code fragments
 	new_frag = CodeBlock(block_count, "__FIRST_BLOCK", line_count);
-	
+
+	functions_dict = {} # An empty dictionary of functions:fragments
+	if os.path.exists(lstfile):
+		with open(lstfile) as f:
+			for line in f:
+				functions_dict[line.strip()] = [] # Add list
+		f.close()
+	current_func = None
+
 	for line in lines:
 		line_count += 1
 	
@@ -81,7 +90,7 @@ if __name__ == "__main__":
 	# The last one
 	fragments.append(new_frag)
 	new_frag.closeBlock(line_count)
-	
+
 	# Remove empty boxes
 	fragments[:] = [x for x in fragments if not (len(x.lines) == 1)]
 	
@@ -90,6 +99,14 @@ if __name__ == "__main__":
 		# only for meaningful boxes
 		if not frag.meaningful:
 			continue
+
+		# Create a func:frags dictionary
+		this_label = re.sub(':.*','', frag.label).strip()	
+		if functions_dict.get(this_label) is not None:
+			current_func = functions_dict.get(this_label)
+		if current_func is not None:
+			current_func.append(frag) 
+
 		# for every code fragment except the empy ones
 		for subline in frag.lines:
 		#for every line in a fragment
@@ -146,4 +163,19 @@ if __name__ == "__main__":
 	if f != None and f != original_stdout:
 		f.close()
 
-print total_transitions
+if not doGraph:
+	print total_transitions
+else:
+	for func in functions_dict:
+		print func+" :",
+		covered_lines = 0
+		total_lines = 0
+		for frag in functions_dict[func]:
+			if not frag.meaningful:
+       	                 continue
+			if frag.covered:
+				covered_lines += frag.last_number - frag.first_number
+			total_lines += frag.last_number - frag.first_number
+
+		print str(covered_lines)+"/"+str(total_lines),
+		print("({:.2f})".format(float(covered_lines)/float(total_lines) * 100))
