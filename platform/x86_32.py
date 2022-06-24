@@ -9,6 +9,7 @@ def instrument(line_from, line_to, tid):
 		insBlock.append("\tpushl\t%eax ## INS\n")
 		insBlock.append("\tpushl\t%edx ## INS\n")
 		insBlock.append("\tpushl\t%ecx ## INS\n")
+		insBlock.append("\tpushl\t%ebx ## INS\n")
 
 		insBlock.append("\tpushf\t ## INS\n")	
 
@@ -25,6 +26,7 @@ def instrument(line_from, line_to, tid):
 
 		insBlock.append("\tpopf\t ## INS\n")
 
+		insBlock.append("\tpopl\t%ebx ## INS\n")
 		insBlock.append("\tpopl\t%ecx ## INS\n")
 		insBlock.append("\tpopl\t%edx ## INS\n")
 		insBlock.append("\tpopl\t%eax ## INS\n")
