@@ -182,6 +182,7 @@ else:
 		print str(covered_lines)+"/"+str(total_lines),
 		print("({:.2f})".format(float(covered_lines)/float(total_lines) * 100))
 		print "-" * 79
+		print "Type\tFrom\tTo\tStatus"
 		has_conditionals = False
 		for frag in functions_dict[func]:
 			if frag.stransition is not None:

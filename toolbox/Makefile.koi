@@ -1,12 +1,12 @@
 # Generic part of a instrumentation make system
 
-TOOLBOX_FILES = toolbox.c
+TOOLBOX_FILE = toolbox.c
 
 #TBD: This gonna be a library
-TOOLBOX = $(TOOLBOX_FILES:.c=.o)
+TOOLBOX = $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE:.c=.o)
 CNT=0
 
-clobber: 
+koi_clobber: 
 	rm -f *.S 	
 	rm -f *.o
 	rm -f *.dot
@@ -16,13 +16,10 @@ clobber:
 asm: $(FILES:.c=.asm)
 
 toolbox:
-	gcc $(TOOLBOX_FILES) $(SPECIAL_CFLAGS) -DTRANSITIONS=$(CNT) -c -o toolbox.o
+	gcc $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE) $(SPECIAL_CFLAGS) -DTRANSITIONS=$(CNT) -c -o $(KOI_ROOT)/toolbox/toolbox.o
 
 instrument: clobber asm $(FILES:.c=.ins) toolbox
 	@echo "Total transitions: "$(CNT)
-
-__app:
-	gcc $(TOOLBOX_FILES:.c=.o) $(SPECIAL_CFLAGS) $(FILES:.c=.ins.o) -o $(APP)
 
 graph: $(FILES:.c=.dot)
 

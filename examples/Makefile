@@ -3,7 +3,7 @@
 FILES = ls.c foo.c
 APP = tst_app
 
-include Makefile.inc 
+include $(KOI_ROOT)/toolbox/Makefile.koi 
 
 #SPECIAL_CFLAGS = -m32
 
@@ -12,3 +12,6 @@ all: $(FILES)
 
 all_oc: instrument
 	gcc $(TOOLBOX) $(FILES:.c=.ins.o) -o $(APP)
+
+clobber: koi_clobber
+	@rm -f $(APP)
