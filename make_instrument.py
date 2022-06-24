@@ -166,7 +166,9 @@ if __name__ == "__main__":
 if not doGraph:
 	print total_transitions
 else:
+	print "\tFUNCTION COVERAGE AND TRANSITIONS"
 	for func in functions_dict:
+		print "="*79
 		print func+" :",
 		covered_lines = 0
 		total_lines = 0
@@ -179,3 +181,23 @@ else:
 
 		print str(covered_lines)+"/"+str(total_lines),
 		print("({:.2f})".format(float(covered_lines)/float(total_lines) * 100))
+		print "-" * 79
+		has_conditionals = False
+		for frag in functions_dict[func]:
+			if frag.stransition is not None:
+				has_conditionals = True
+				print "S\t"+str(frag.stransition[0])+'\t'+str(frag.stransition[1]),
+				if frag.skiped:
+					print "\tCOVERED"
+				else:
+					print "\t---"
+
+			if frag.jtransition is not None:
+				has_conditionals = True
+				print "J\t"+str(frag.jtransition[0])+'\t'+str(frag.jtransition[1]),
+				if frag.jumped:
+					print "\tCOVERED"
+				else:
+					print "\t---"
+		if has_conditionals is False:
+			print "\tNO TRANSTIONS"

@@ -29,6 +29,8 @@ class CodeBlock:
 		self.stransition = None
 		self.ftransition = False
 		self.fallthru = False
+		self.jumped = False
+		self.skiped = False
 		self.transitions_count = 0
 
 	def addLine(self, line, count):
@@ -113,6 +115,7 @@ class CodeBlock:
 			color = "gray"
 			if lines_that_contain("::"+str(self.stransition[0])+":"+str(self.stransition[1]), fp) is not None:
 				color = "black"
+				self.skiped = True
 			else:
 				color = "red"
 			print self.lines[0], "->", self.skip_to_block, "[ penwidth = 5 fontsize = 28 fontcolor = \""+color+"\" label = ",
@@ -125,6 +128,7 @@ class CodeBlock:
 			color = "gray"
 			if lines_that_contain("::"+str(self.jtransition[0])+":"+str(self.jtransition[1]), fp) is not None:
 				color = "black"
+				self.jumped = True
 			else:
 				color = "red"
 			print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"" + color + "\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";

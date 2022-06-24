@@ -17,13 +17,8 @@
 #define STRLEN1 128
 #define STRLEN2 64
 
+extern void foo();
 extern void render_dump(void);
-
-static int __attribute__((used))
-foo(void)
-{
-	return 5;
-}
 
 int main(int argc, char *argv[]) 
 {
@@ -44,6 +39,7 @@ int main(int argc, char *argv[])
 #endif	
 
 	if (argc != 3) {
+		foo();
 		printf("Usage: <option> <directory name>\n");
 		exit(0);
 	}

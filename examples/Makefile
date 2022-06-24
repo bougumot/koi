@@ -1,6 +1,6 @@
 # A simple make to cereate a app or .S
 
-FILES = ls.c
+FILES = ls.c foo.c
 TOOLBOX = toolbox.c
 APP = tst_app
 CNT=0
@@ -20,14 +20,18 @@ clobber:
 	rm -f *.o
 	rm -f *.dot
 	rm -f *.lst
+	rm -f *.cov
 
 graph: $(FILES:.c=.dot)
 
 %.dot:
-	@../make_instrument.py -i $(@:.dot=.S) -g -t coverage.log -o $@
-	
-instrument: clobber asm $(FILES:.c=.ins)
-	@gcc $(TOOLBOX) $(SPECIAL_CFLAGS) -DTRANSITIONS=$(CNT) $(FILES:.c=.ins.o) -o $(APP)
+	@../make_instrument.py -i $(@:.dot=.S) -g -t coverage.log -o $@ > $(@:.dot=.cov)
+
+toolbox:
+	gcc $(TOOLBOX) $(SPECIAL_CFLAGS) -DTRANSITIONS=$(CNT) -c -o toolbox.o
+
+instrument: clobber asm $(FILES:.c=.ins) toolbox
+	gcc $(TOOLBOX:.c=.o) $(SPECIAL_CFLAGS) $(FILES:.c=.ins.o) -o $(APP)
 	@echo "Total transitions: "$(CNT)
 
 %.ins:
