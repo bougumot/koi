@@ -19,6 +19,7 @@ clobber:
 	rm -f *.S 	
 	rm -f *.o
 	rm -f *.dot
+	rm -f *.lst
 
 graph: $(FILES:.c=.dot)
 
@@ -33,3 +34,4 @@ instrument: clobber asm $(FILES:.c=.ins)
 	$(eval cnt= $(shell ../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S) -s $(CNT)))
 	$(eval CNT=$(shell expr $(CNT) + $(cnt)))
 	gcc $(@:.ins=.ins.S) $(SPECIAL_CFLAGS) -c -o $(@:.ins=.ins.o)
+	nm --defined-only $(@).o | grep " [Tt] " | cut -d ' ' -f 3 > $(@).lst

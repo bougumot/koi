@@ -19,6 +19,12 @@
 
 extern void render_dump(void);
 
+static int __attribute__((used))
+foo(void)
+{
+	return 5;
+}
+
 int main(int argc, char *argv[]) 
 {
 	DIR 		   *p_dir;
