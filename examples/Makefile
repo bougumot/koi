@@ -5,14 +5,14 @@ APP = tst_app
 
 include $(KOI_ROOT)/toolbox/Makefile.koi 
 
-#SPECIAL_CFLAGS = -m32
-#SPECIAL_CFLAGS = -g
+SPECIAL_CFLAGS = -g
+#PLATFORM_CFLAGS = -m32
 
 all: $(FILES)
 	gcc $^ -o $(APP)
 
 all_oc: instrument
-	gcc $(TOOLBOX) $(FILES:.c=.ins.o) -o $(APP)
+	gcc $(TOOLBOX) $(FILES:.c=.ins.o) $(PLATFORM_CFLAGS) -o $(APP)
 
 clobber: koi_clobber
 	@rm -f $(APP)

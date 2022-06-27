@@ -67,16 +67,20 @@ if __name__ == "__main__":
 		f.close()
 	current_func = None
 
+	# First pass - collect the boxes
 	for line in lines:
 		line_count += 1
 	
 		matchlabel = platform.label_mark.search(line)
 		matchjump = platform.jump_cmd.search(line)
 		if matchlabel:
-			new_frag.closeBlock(line_count - 1)
-			fragments.append(new_frag)
-			block_count += 1
-			new_frag = CodeBlock(block_count, line, line_count);
+			# Some labels are just labels... ignore them
+			ignored_label = platform.ignored_labels.search(line)
+			if ignored_label is None:
+				new_frag.closeBlock(line_count - 1)
+				fragments.append(new_frag)
+				block_count += 1
+				new_frag = CodeBlock(block_count, line, line_count);
 			new_frag.addLine(line, line_count)
 		elif matchjump:
 			new_frag.addLine(line, line_count)

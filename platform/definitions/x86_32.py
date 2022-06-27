@@ -13,3 +13,5 @@ cmp_or_jmp_cmd = re.compile(r'(jmp|ret[a-z]*|cmp[a-z]*[ \t]+.*)')
 line_address = re.compile(r'^[ ]*([0-9]+)[ ]*.*')
 
 meaningles = re.compile(r'^[ \t]*(#.*|.*\..*|.*:.*|$)')
+
+ignored_labels = re.compile(r'^(Lfunc_begin[0-9]*|Ltmp[0-9]*):.*')

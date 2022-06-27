@@ -16,7 +16,7 @@ koi_clobber:
 asm: $(FILES:.c=.asm)
 
 toolbox:
-	gcc $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE) $(SPECIAL_CFLAGS) -DTRANSITIONS=$(CNT) -c -o $(KOI_ROOT)/toolbox/toolbox.o
+	gcc $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE) $(SPECIAL_CFLAGS) $(PLATFORM_CFLAGS) -DTRANSITIONS=$(CNT) -c -o $(KOI_ROOT)/toolbox/toolbox.o
 
 instrument: clobber asm $(FILES:.c=.ins) toolbox
 	@echo "Total transitions: "$(CNT)
@@ -24,7 +24,7 @@ instrument: clobber asm $(FILES:.c=.ins) toolbox
 graph: $(FILES:.c=.dot)
 
 %.asm:
-	gcc $(@:.asm=.c) $(SPECIAL_CFLAGS) -S -DINSTRUMENTED -o $(@:.asm=.S)
+	gcc $(@:.asm=.c) $(SPECIAL_CFLAGS) $(PLATFORM_CFLAGS) -S -DINSTRUMENTED -o $(@:.asm=.S)
 
 %.dot:
 	@../make_instrument.py -i $(@:.dot=.S) -g -t coverage.log -o $@ > $(@:.dot=.cov)
@@ -32,7 +32,7 @@ graph: $(FILES:.c=.dot)
 %.ins:
 	@$(eval cnt= $(shell ../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S) -s $(CNT)))
 	@$(eval CNT=$(shell expr $(CNT) + $(cnt)))
-	@gcc $(@:.ins=.ins.S) $(SPECIAL_CFLAGS) -c -o $(@:.ins=.ins.o)
+	@gcc $(@:.ins=.ins.S) $(PLATFORM_CFLAGS) -c -o $(@:.ins=.ins.o)
 	@nm --defined-only $(@).o | grep " [Tt] " | cut -d ' ' -f 3 > $(@).lst
 
 
