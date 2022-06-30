@@ -3,16 +3,17 @@
 #define FROM	0
 #define TO	1
 #define FLAGS	2
+#define T	3
 
 #define TF_PENDING	1
 #define TF_JUMPED	2
 
-static int __transitions[TRANSITIONS+1][3];
+static int __transitions[TRANSITIONS+1][4];
 
-const char*fmt = "%d::%d:%d;\n";
+const char*fmt = "%d::%d:%d;[%d]\n";
 
 void __attribute__((used, noinline))
-dump(int from, int to, int id)
+__koi_covdump(int from, int to, int id)
 {
 	static int prev_from;
 	static int prev_id = -1;	
@@ -28,6 +29,13 @@ dump(int from, int to, int id)
 			__transitions[id - 1][FROM] = 0;
 			__transitions[id - 1][TO] = 0;
 			__transitions[id - 1][FLAGS] = 0;
+			__transitions[id - 1][T] = 0;
+		}
+		if (__transitions[id][FLAGS] & TF_JUMPED) {
+			// Decrement Jump temperature
+			if (__transitions[id - 1][T] > 0) {
+				__transitions[id - 1][T] -= 1;
+			}
 		}
 	} else {
 		// This was a jump, remove pending flag
@@ -38,6 +46,7 @@ dump(int from, int to, int id)
 
 	__transitions[id][FROM] = from;
 	__transitions[id][TO] = to;
+	__transitions[id][T] += 1;
 	
 	// It has a destination, so mark it a jump
 	if (to > 0) {
@@ -55,8 +64,8 @@ render_dump()
 {
 	int i;
 	for (i = 0; i < TRANSITIONS; i++) {
-		if (__transitions[i][0] || __transitions[i][1]) {
-			printf(fmt, i, __transitions[i][0], __transitions[i][1]);
+		if (__transitions[i][FROM] || __transitions[i][TO]) {
+			printf(fmt, i, __transitions[i][FROM], __transitions[i][TO], __transitions[i][T]);
 		}
 	}
 }

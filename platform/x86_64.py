@@ -14,7 +14,7 @@ def instrument(line_from, line_to, tid):
 		insBlock.append("\tmovl\t$"+str(line_from)+", %edi ## INS\n")
 		insBlock.append("\tmovl\t$"+str(line_to)+", %esi ## INS\n")
 		insBlock.append("\tmovl\t$"+str(tid)+", %edx ## INS\n")
-		insBlock.append("\tcallq\t_dump ## INS\n")
+		insBlock.append("\tcallq\t___koi_covdump ## INS\n")
 		insBlock.append("\tpopfq\t ## INS\n")
 		
 		insBlock.append("\tpopq\t%rcx ## INS\n")

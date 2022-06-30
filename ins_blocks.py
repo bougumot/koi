@@ -5,6 +5,8 @@ import html
 import re
 import platform.platform as platform
 
+cov_report_line = re.compile(r'^([0-9]*)::([0-9]*):([0-9]*);\[([0-9]*)\].*')
+
 def lines_that_contain(string, fp):
 	if fp is None:
 		return None
@@ -97,10 +99,18 @@ class CodeBlock:
 		else:
 			color = "gray"
 
+		block_t = 0
+		lines = lines_that_contain("::"+str(self.first_number)+":0", fp)
+		if lines is not None:
+			# Get temperature value
+			matchobj = cov_report_line.search(lines[0])
+			if matchobj is not None:
+				block_t = matchobj.group(4)
+
 		if lines_that_contain("::"+str(self.last_number)+":", fp) is None and color is not "gray":
 			color = "brown"
 
-		print "\"state"+str(self.index)+"\"","[ style = \"filled\" penwidth = 1 fillcolor = \"white\" fontname = \"Courier New\" shape = \"Mrecord\" label =<<table border=\"0\" cellborder=\"0\" cellpadding=\"3\" bgcolor=\"white\"><tr><td bgcolor=\"black\" align=\"center\" colspan=\"2\"><font color=\"white\">", self.label, "</font></td></tr>",# no NL
+		print "\"state"+str(self.index)+"\"","[ style = \"filled\" penwidth = 1 fillcolor = \"white\" fontname = \"Courier New\" shape = \"Mrecord\" label =<<table border=\"0\" cellborder=\"0\" cellpadding=\"3\" bgcolor=\"white\"><tr><td bgcolor=\"black\" align=\"center\" colspan=\"2\"><font color=\"white\">", self.label + ", T = " + str(block_t), "</font></td></tr>",# no NL
 		for line in self.lines[1:]:
 			print "<tr><td align=\"left\" port=\"r5\">","<font color=\""+color+"\">", html.escape(line.strip().replace("}","\}").replace("{","\{").replace("\t","    ")),"</font></td></tr>",
 
