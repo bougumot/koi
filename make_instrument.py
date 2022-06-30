@@ -129,7 +129,7 @@ if __name__ == "__main__":
 						frag.jtransition = (lfrom, lto)
 						frag.jump_to_block = sfrag.lines[0]
 			
-		if (index+1 < len(fragments) and "jmp" not in subline and "ret" not in subline):
+		if (index+1 < len(fragments) and not platform.uncond_jump(subline)):
 			lfrom = frag.last_number
 			lto = frag.last_number + 1
 			frag.stransition = (lfrom, lto)

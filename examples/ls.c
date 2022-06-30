@@ -12,7 +12,6 @@
 
 #include <time.h>
 #include <locale.h>
-#include <langinfo.h>
 
 #define STRLEN1 128
 #define STRLEN2 64

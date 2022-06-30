@@ -6,6 +6,9 @@ if config.platform is "x86_64":
 elif config.platform is "x86_32":
 	import x86_32 as asm
 	from definitions.x86_32 import *
+elif config.platform is "armv7_32":
+	import armv7_32 as asm
+	from definitions.armv7_32 import *
 else:
 	print "UNSUPPORTED PLATFORM"
 	exit(1)
