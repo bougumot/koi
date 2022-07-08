@@ -19,6 +19,8 @@
 extern void foo();
 extern void render_dump(void);
 
+int rc;
+
 int main(int argc, char *argv[]) 
 {
 	DIR 		   *p_dir;
@@ -34,7 +36,11 @@ int main(int argc, char *argv[])
 	char 		   *link_buf;
 
 #if defined(INSTRUMENTED)
-	atexit(render_dump);
+	rc = 0xdeadbeef;
+	rc = atexit(render_dump);
+	if (rc) {
+		exit(1);
+	}
 #endif	
 
 	if (argc != 3) {

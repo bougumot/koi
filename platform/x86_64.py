@@ -11,9 +11,16 @@ def instrument(line_from, line_to, tid):
 		insBlock.append("\tpushq\t%rcx ## INS\n")
 	
 		insBlock.append("\tpushfq\t ## INS\n")
-		insBlock.append("\tmovl\t$"+str(line_from)+", %edi ## INS\n")
-		insBlock.append("\tmovl\t$"+str(line_to)+", %esi ## INS\n")
-		insBlock.append("\tmovl\t$"+str(tid)+", %edx ## INS\n")
+
+		insBlock.append("\tmovq	___koi_from@GOTPCREL(%rip), %rcx\n")
+		insBlock.append("\tmovl\t$"+str(line_from)+",(%rcx)  ## INS\n")
+		
+		insBlock.append("\tmovq	___koi_to@GOTPCREL(%rip), %rcx\n")
+		insBlock.append("\tmovl\t$"+str(line_to)+", (%rcx) ## INS\n")
+		
+		insBlock.append("\tmovq	___koi_id@GOTPCREL(%rip), %rcx\n")
+		insBlock.append("\tmovl\t$"+str(tid)+", (%rcx)## INS\n")
+		
 		insBlock.append("\tcallq\t___koi_covdump ## INS\n")
 		insBlock.append("\tpopfq\t ## INS\n")
 		
