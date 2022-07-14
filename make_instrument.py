@@ -80,7 +80,7 @@ if __name__ == "__main__":
 				new_frag.closeBlock(line_count - 1)
 				fragments.append(new_frag)
 				block_count += 1
-				new_frag = CodeBlock(block_count, line, line_count);
+				new_frag = CodeBlock(block_count, line, line_count)
 			new_frag.addLine(line, line_count)
 		elif matchjump:
 			new_frag.addLine(line, line_count)
@@ -133,7 +133,16 @@ if __name__ == "__main__":
 			lfrom = frag.last_number
 			lto = frag.last_number + 1
 			frag.stransition = (lfrom, lto)
-			frag.skip_to_block = fragments[index + 1].lines[0]
+			if fragments[index + 1].meaningful:
+				frag.skip_to_block = fragments[index + 1].lines[0]
+			else:
+				k = 2
+				while (index + k < len(fragments)) and (not fragments[index + k].meaningful):
+					k += 1
+				if index + k < len(fragments):
+					frag.skip_to_block = fragments[index + k].lines[0]
+				else:
+					frag.stransition = None
 	
 			matchobj = platform.cond_jump_cmd.search(subline)
 			if matchobj:

@@ -5,7 +5,7 @@ APP = tst_app
 
 include $(KOI_ROOT)/toolbox/Makefile.koi 
 
-SPECIAL_CFLAGS = -g
+SPECIAL_CFLAGS = -g -O2
 #PLATFORM_CFLAGS = -m32
 
 all: $(FILES)
