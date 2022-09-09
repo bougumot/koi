@@ -15,10 +15,10 @@ koi_clobber:
 
 asm: $(FILES:.c=.asm)
 
-toolbox:
+koi_toolbox:
 	gcc $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE) $(SPECIAL_CFLAGS) $(PLATFORM_CFLAGS) -DTRANSITIONS=$(CNT) -c -o $(KOI_ROOT)/toolbox/toolbox.o
 
-instrument: clobber asm $(FILES:.c=.ins) toolbox
+koi_instrument: clobber asm $(FILES:.c=.ins) koi_toolbox
 	@echo "Total transitions: "$(CNT)
 
 graph: $(FILES:.c=.dot)

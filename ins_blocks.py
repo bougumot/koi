@@ -107,14 +107,14 @@ class CodeBlock:
 			if matchobj is not None:
 				block_t = matchobj.group(4)
 
-		if lines_that_contain("::"+str(self.last_number)+":", fp) is None and color is not "gray":
+		if lines_that_contain("::"+str(self.last_number)+":", fp) is None and color != "gray":
 			color = "brown"
 
-		print "\"state"+str(self.index)+"\"","[ style = \"filled\" penwidth = 1 fillcolor = \"white\" fontname = \"Courier New\" shape = \"Mrecord\" label =<<table border=\"0\" cellborder=\"0\" cellpadding=\"3\" bgcolor=\"white\"><tr><td bgcolor=\"black\" align=\"center\" colspan=\"2\"><font color=\"white\">", self.label + ", T = " + str(block_t), "</font></td></tr>",# no NL
+		print("\"state"+str(self.index)+"\"","[ style = \"filled\" penwidth = 1 fillcolor = \"white\" fontname = \"Courier New\" shape = \"Mrecord\" label =<<table border=\"0\" cellborder=\"0\" cellpadding=\"3\" bgcolor=\"white\"><tr><td bgcolor=\"black\" align=\"center\" colspan=\"2\"><font color=\"white\">", self.label + ", T = " + str(block_t), "</font></td></tr>", end = '')
 		for line in self.lines[1:]:
-			print "<tr><td align=\"left\" port=\"r5\">","<font color=\""+color+"\">", html.escape(line.strip().replace("}","\}").replace("{","\{").replace("\t","    ")),"</font></td></tr>",
+			print("<tr><td align=\"left\" port=\"r5\">","<font color=\""+color+"\">", html.escape(line.strip().replace("}","\}").replace("{","\{").replace("\t","    ")),"</font></td></tr>", end = '')
 
-		print "</table>> ];"
+		print("</table>> ];")
 
 	def emitTransitions(self, cov_file):
 		fp = None
@@ -128,11 +128,11 @@ class CodeBlock:
 				self.skiped = True
 			else:
 				color = "red"
-			print self.lines[0], "->", self.skip_to_block, "[ penwidth = 5 fontsize = 28 fontcolor = \""+color+"\" label = ",
+			print(self.lines[0], "->", self.skip_to_block, "[ penwidth = 5 fontsize = 28 fontcolor = \""+color+"\" label = ", end = '')
 			if self.fallthru:
-				print "\"SKIP " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]"
+				print("\"SKIP " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]")
 			else:
-				print "\"FALL " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]"
+				print("\"FALL " + str(self.stransition[0]) + " -> " + str(self.stransition[1]) + "\"]")
 
 		if self.jtransition:
 			color = "gray"
@@ -141,13 +141,13 @@ class CodeBlock:
 				self.jumped = True
 			else:
 				color = "red"
-			print self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"" + color + "\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]";
+			print(self.lines[0], " -> ", self.jump_to_block ,"[ penwidth = 5 fontsize = 28 fontcolor = \"" + color + "\" label = \"JUMP " + str(self.jtransition[0]) + " -> "+ str(self.jtransition[1]) + "\"]")
 
 	def renderBlock(self, show_lines):
 		for line in self.lines[1:]:
 			if show_lines:
-				print line,
+				print(line, end = '')
 			else:
-				print re.sub(r'^\d+ ?', '', line, re.MULTILINE),
+				print(re.sub(r'^\d+ ?', '', line, re.MULTILINE), end = '')
 
 # End of file

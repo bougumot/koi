@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 	
 import sys, getopt
 import os.path
@@ -20,11 +20,11 @@ if __name__ == "__main__":
 	try:
 		opts, args = getopt.getopt(sys.argv[1:],"hi:o:gvs:t:",["ifile=","ofile="])
 	except getopt.GetoptError:
-		print 'USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>'
+		print('USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>')
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>'
+			print('USAGE: -i <inputfile> -o <outputfile> -s <starting transition ID>')
 			sys.exit()
 		elif opt in ("-i", "--ifile"):
 			inputfile = arg
@@ -39,11 +39,11 @@ if __name__ == "__main__":
 			if os.path.exists(arg):
 				trans_name = arg
 		elif opt == '-v':
-			print 'Input file is ', inputfile
+			print('Input file is ', inputfile)
 			if outputfile is not None:
-				print 'Output file is ', outputfile
+				print('Output file is ', outputfile)
 			else:
-				print 'Using stdout'
+				print('Using stdout')
 	
 	tid += 1
 	
@@ -177,12 +177,12 @@ if __name__ == "__main__":
 		f.close()
 
 if not doGraph:
-	print total_transitions
+	print(total_transitions)
 else:
-	print "\tFUNCTION COVERAGE AND TRANSITIONS"
+	print ("\tFUNCTION COVERAGE AND TRANSITIONS")
 	for func in functions_dict:
-		print "="*79
-		print func+" :",
+		print("="*79)
+		print(func+" :", end = '')
 		covered_lines = 0
 		total_lines = 0
 		for frag in functions_dict[func]:
@@ -192,26 +192,26 @@ else:
 				covered_lines += frag.last_number - frag.first_number
 			total_lines += frag.last_number - frag.first_number
 
-		print str(covered_lines)+"/"+str(total_lines),
+		print(str(covered_lines)+"/"+str(total_lines), end = '')
 		print("({:.2f})".format(float(covered_lines)/float(total_lines) * 100))
-		print "-" * 79
-		print "Type\tFrom\tTo\tStatus"
+		print("-" * 79)
+		print("Type\tFrom\tTo\tStatus")
 		has_conditionals = False
 		for frag in functions_dict[func]:
 			if frag.stransition is not None:
 				has_conditionals = True
-				print "S\t"+str(frag.stransition[0])+'\t'+str(frag.stransition[1]),
+				print("S\t"+str(frag.stransition[0])+'\t'+str(frag.stransition[1]), end = '')
 				if frag.skiped:
-					print "\tCOVERED"
+					print("\tCOVERED")
 				else:
-					print "\t---"
+					print("\t---")
 
 			if frag.jtransition is not None:
 				has_conditionals = True
-				print "J\t"+str(frag.jtransition[0])+'\t'+str(frag.jtransition[1]),
+				print("J\t"+str(frag.jtransition[0])+'\t'+str(frag.jtransition[1]), end = '')
 				if frag.jumped:
-					print "\tCOVERED"
+					print("\tCOVERED")
 				else:
-					print "\t---"
+					print("\t---")
 		if has_conditionals is False:
-			print "\tNO TRANSTIONS"
+			print("\tNO TRANSTIONS")
