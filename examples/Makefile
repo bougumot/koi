@@ -11,8 +11,8 @@ SPECIAL_CFLAGS = -g -O2
 all: $(FILES)
 	gcc $^ -o $(APP)
 
-all_oc: koi_instrument
+all_oc: koi_instrument koi_toolbox 
 	gcc $(TOOLBOX) $(FILES:.c=.ins.o) $(PLATFORM_CFLAGS) -o $(APP)
 
-clobber: koi_clobber
+clobber: koi_clobber koi_clean_toolbox
 	@rm -f $(APP)

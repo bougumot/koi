@@ -12,13 +12,20 @@ koi_clobber:
 	rm -f *.dot
 	rm -f *.lst
 	rm -f *.cov
+	rm -f *.transitions
 
 asm: $(FILES:.c=.asm)
 
 koi_toolbox:
+	CNT=`$(KOI_ROOT)/toolbox/get_transitions.sh`
 	gcc $(KOI_ROOT)/toolbox/$(TOOLBOX_FILE) $(SPECIAL_CFLAGS) $(PLATFORM_CFLAGS) -DTRANSITIONS=$(CNT) -c -o $(KOI_ROOT)/toolbox/toolbox.o
+	@echo "A toot box for $(CNT) transition made"
 
-koi_instrument: clobber asm $(FILES:.c=.ins) koi_toolbox
+koi_clean_toolbox:
+	rm -f $(TOOLBOX)
+
+koi_instrument: clobber asm $(FILES:.c=.ins)
+	@echo $(CNT) > ./koi.transitions # save transition number for a folder
 	@echo "Total transitions: "$(CNT)
 
 graph: $(FILES:.c=.dot)
@@ -27,10 +34,10 @@ graph: $(FILES:.c=.dot)
 	gcc $(@:.asm=.c) $(SPECIAL_CFLAGS) $(PLATFORM_CFLAGS) -S -DINSTRUMENTED -o $(@:.asm=.S)
 
 %.dot:
-	@../make_instrument.py -i $(@:.dot=.S) -g -t coverage.log -o $@ > $(@:.dot=.cov)
+	@$(KOI_ROOT)/make_instrument.py -i $(@:.dot=.S) -g -t $(KOI_ROOT)/coverage.log -o $@ > $(@:.dot=.cov)
 
 %.ins:
-	@$(eval cnt= $(shell ../make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S) -s $(CNT)))
+	@$(eval cnt= $(shell $(KOI_ROOT)/make_instrument.py -i $(@:.ins=.S) -o $(@:.ins=.ins.S) -s $(CNT)))
 	@$(eval CNT=$(shell expr $(CNT) + $(cnt)))
 	@gcc $(@:.ins=.ins.S) $(PLATFORM_CFLAGS) -c -o $(@:.ins=.ins.o)
 	@nm --defined-only $(@).o | grep " [Tt] " | cut -d ' ' -f 3 > $(@).lst
