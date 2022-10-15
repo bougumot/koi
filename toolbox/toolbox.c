@@ -62,7 +62,7 @@ __koi_covdump(int from, int to, int id)
 }
 
 void __attribute__((used, noinline))
-render_dump()
+__koi_covdump_render()
 {
 	int i;
 	for (i = 0; i < TRANSITIONS; i++) {

@@ -17,7 +17,7 @@
 #define STRLEN2 64
 
 extern void foo();
-extern void render_dump(void);
+extern void __koi_covdump_render(void);
 
 int main(int argc, char *argv[]) 
 {
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	char 		   *link_buf;
 
 #if defined(INSTRUMENTED)
-	atexit(render_dump);
+	atexit(__koi_covdump_render);
 #endif	
 
 	if (argc != 3) {

@@ -46,7 +46,7 @@ class CodeBlock:
 
 	def instrumentBlock(self, tid):
 		base_tid = tid
-		if "dump" in self.label: # do not instrument the instrumenter
+		if "__koi_covdump" in self.label: # do not instrument the instrumenter
 			return tid
 		if not self.meaningful:
 			return tid
