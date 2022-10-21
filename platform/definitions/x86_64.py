@@ -14,7 +14,7 @@ line_address = re.compile(r'^[ ]*([0-9]+)[ ]*.*')
 
 meaningles = re.compile(r'^[ \t]*(#.*|.*\..*|.*:.*|$)')
 
-ignored_labels = re.compile(r'^(Lfunc_begin[0-9]*|Ltmp[0-9]*|.LFB[0-9]*|.LBB[0-9]*):.*')
+ignored_labels = re.compile(r'^(Lfunc_begin[0-9]*|Ltmp[0-9]*|.LFB[0-9]*|.LBB[0-9]*|.LVL[0-9]*):.*')
 
 def uncond_jump(subline):
 	if "jmp" in subline or "ret" in subline:

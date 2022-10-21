@@ -46,8 +46,8 @@ __koi_covdump(int from, int to, int id)
 		}
 	}
 
-	__transitions[id].from = from;
-	__transitions[id].to = to;
+	__transitions[id].from = (void*)from;
+	__transitions[id].to = (void*)to;
 	__transitions[id].t += 1;
 	
 	// It has a destination, so mark it a jump
